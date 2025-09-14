@@ -124,6 +124,9 @@ function applyStoredTheme(){
         document.getElementById("themeToggleBtn").textContent="☀️";
     }
 }
+function speakNote(content){
+
+}
 document.addEventListener("DOMContentLoaded", function(){
     applyStoredTheme();
     notes=loadNotes();
