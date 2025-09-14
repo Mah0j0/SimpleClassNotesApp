@@ -127,30 +127,29 @@ function applyStoredTheme(){
     }
 }
 //------LÓGICA PARA TEXT TO SPEECH CON IBM WATSON
-async function speakNote(content,noteId){
+async function speakNote(content, noteId){
+  // Llama a tu backend en el mismo puerto
   const response = await fetch("/tts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: content }),
+    body: JSON.stringify({ text: content }), // se envía el contenido correcto
   });
 
   if (!response.ok) {
     alert("Error al generar audio");
     return;
   }
-  else{
-    console.log("Audio generado correctamente");
-  }
 
   // Recibe el mp3 en binario y crea un blob
   const audioBlob = await response.blob();
   const audioUrl = URL.createObjectURL(audioBlob);
 
-  // Lo asigna al audio player
+  // Busca el audio player correspondiente a esa nota
   const player = document.getElementById(`player-${noteId}`);
   player.src = audioUrl;
   player.play();
 }
+
 document.addEventListener("DOMContentLoaded", function(){
     applyStoredTheme();
     notes=loadNotes();
