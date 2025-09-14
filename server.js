@@ -1,11 +1,15 @@
-import express from "express";
-import fetch from "node-fetch";
-import fs from "fs";
-import dotenv from "dotenv";
+const express = require("express");
+const fetch = require("node-fetch"); // versión 2
+const fs = require("fs");
+const cors = require("cors");
+require("dotenv").config();
 
-dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors());
+
+// Servir archivos estáticos desde public
+app.use(express.static("public"));
 
 const IBM_API_KEY = process.env.IBM_API_KEY;
 const IBM_URL = process.env.IBM_URL;
@@ -28,8 +32,6 @@ app.post("/tts", async (req, res) => {
 
     const audioBuffer = await response.arrayBuffer();
     res.set("Content-Type", "audio/mpeg");
-    fs.writeFileSync(`./audios/note_${Date.now()}.mp3`, Buffer.from(audioBuffer));
-    //./ significa que 
     res.send(Buffer.from(audioBuffer));
   } catch (err) {
     console.error(err);

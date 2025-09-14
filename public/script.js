@@ -138,6 +138,9 @@ async function speakNote(content,noteId){
     alert("Error al generar audio");
     return;
   }
+  else{
+    console.log("Audio generado correctamente");
+  }
 
   // Recibe el mp3 en binario y crea un blob
   const audioBlob = await response.blob();
