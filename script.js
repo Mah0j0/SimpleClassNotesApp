@@ -82,9 +82,11 @@ function renderNotes(){
                     <path d="M213.23-265.23q-36.61-44.62-56.92-98.92Q136-418.46 136-480q0-133.31 88.46-230.65Q312.92-808 443-822v32q-116.23 14.77-195.62 102.77Q168-599.23 168-480q0 55 17.5 104t49.5 89l-21.77 21.77ZM480-136q-61.54 0-116.23-20.42-54.69-20.43-100.31-57.04L286.77-236q40 32 89.11 50Q425-168 480-168q55 0 104.12-18.38 49.11-18.39 89.88-50.39l23.31 22.54Q651.69-177.62 597-156.81 542.31-136 480-136Zm267.54-130L725-288.54q31.23-40 49.12-88.61Q792-425.77 792-480q0-119.23-79-206.46T518.54-789.23v-32q129.31 14.77 217.38 111.35Q824-613.31 824-480q0 61.54-19.92 115.46-19.93 53.92-56.54 98.54ZM404-348.92v-262.16L611.08-480 404-348.92Z"/>
                 </svg>
             </button>
+            <audio id="player" controls></audio>
         </div>
         `).join('');
 }
+
 function openNoteDialog(noteId=null){
     const dialog=document.getElementById("noteDialog");
     const titleInput=document.getElementById("noteTitle");
@@ -124,8 +126,27 @@ function applyStoredTheme(){
         document.getElementById("themeToggleBtn").textContent="☀️";
     }
 }
-function speakNote(content){
+//------LÓGICA PARA TEXT TO SPEECH CON IBM WATSON
+async function speakNote(content){
+  const response = await fetch("/tts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
 
+  if (!response.ok) {
+    alert("Error al generar audio");
+    return;
+  }
+
+  // Recibe el mp3 en binario y crea un blob
+  const audioBlob = await response.blob();
+  const audioUrl = URL.createObjectURL(audioBlob);
+
+  // Lo asigna al audio player
+  const player = document.getElementById("player");
+  player.src = audioUrl;
+  player.play();
 }
 document.addEventListener("DOMContentLoaded", function(){
     applyStoredTheme();
